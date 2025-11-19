@@ -14,8 +14,6 @@ import { ThemedView } from '@/components/themed-view';
 import { ThemedText } from '@/components/themed-text';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
-
-// Import DateTimePicker
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { FilterDuration, useTransaction } from '../context/TransactionContext';
 
@@ -38,8 +36,8 @@ export default function TabTwoScreen() {
     currentBalance, 
     filterDuration, 
     setFilterDuration,
-    filterDate,     // <-- Ambil state tanggal
-    setFilterDate   // <-- Ambil fungsi set tanggal
+    filterDate,
+    setFilterDate
   } = useTransaction();
 
   const [modalVisible, setModalVisible] = useState(false);
@@ -53,37 +51,30 @@ export default function TabTwoScreen() {
     return date.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
   };
 
-  // Label dinamis di Header
   const getFilterLabel = () => {
     switch (filterDuration) {
-      case 'date': return formatDateIndo(filterDate); // Tampilkan tanggal lengkap
+      case 'date': return formatDateIndo(filterDate);
       case 'month': return filterDate.toLocaleDateString('id-ID', { month: 'long', year: 'numeric' });
       case 'year': return filterDate.getFullYear().toString();
       default: return 'Semua Waktu';
     }
   };
 
-  // Handler saat user memilih tanggal di kalender
   const onChangeDate = (event: any, selectedDate?: Date) => {
-    // Di Android, datepicker menutup sendiri. Di iOS butuh handling manual.
     if (Platform.OS === 'android') {
       setShowDatePicker(false);
     }
-
     if (selectedDate) {
       setFilterDate(selectedDate);
-      setFilterDuration('date'); // Otomatis set mode ke 'Per Tanggal'
+      setFilterDuration('date');
     }
   };
 
-  // Fungsi saat opsi di Modal dipilih
   const handleSelectFilter = (type: FilterDuration) => {
     if (type === 'date') {
-      // Jika pilih tanggal, tutup modal menu dulu, baru buka kalender
       setModalVisible(false);
-      setTimeout(() => setShowDatePicker(true), 300); // Delay sedikit agar smooth
+      setTimeout(() => setShowDatePicker(true), 300);
     } else {
-      // Reset tanggal ke hari ini jika pindah ke mode bulan/tahun/all
       if (type !== 'all') {
         setFilterDate(new Date());
       }
@@ -105,7 +96,6 @@ export default function TabTwoScreen() {
             <ThemedText style={styles.headerTitle}>Laporan</ThemedText>
           </View>
 
-          {/* FILTER BUTTON */}
           <TouchableOpacity 
             style={styles.dateFilter} 
             onPress={() => setModalVisible(true)}
@@ -179,7 +169,6 @@ export default function TabTwoScreen() {
         </View>
       </ScrollView>
 
-      {/* --- MODAL FILTER --- */}
       <Modal
         animationType="fade"
         transparent={true}
@@ -242,13 +231,12 @@ export default function TabTwoScreen() {
         </TouchableWithoutFeedback>
       </Modal>
 
-      {/* --- COMPONENT DATE PICKER (KALENDER) --- */}
       {showDatePicker && (
         <DateTimePicker
           testID="dateTimePicker"
           value={filterDate}
           mode="date"
-          display="default" // Android: Kalender pop-up, iOS: Spinner/Calendar inline
+          display="default" 
           onChange={onChangeDate}
         />
       )}
@@ -287,7 +275,7 @@ const styles = StyleSheet.create({
   },
   headerTitle: {
     fontSize: 20,
-    fontWeight: 'bold',
+    fontFamily: 'Poppins_700Bold',
     color: Colors.text,
   },
   dateFilter: {
@@ -298,12 +286,14 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: Colors.textLight,
     textAlign: 'right',
+    fontFamily: 'Poppins_400Regular',
   },
   dateMonth: {
     fontSize: 16,
     fontWeight: '500',
     color: Colors.text,
     textAlign: 'right',
+    fontFamily: 'Poppins_600SemiBold',
   },
   scrollView: { flex: 1 },
   mainContent: { padding: 24 },
@@ -326,10 +316,11 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: Colors.textLight,
     marginBottom: 4,
+    fontFamily: 'Poppins_400Regular',
   },
   summaryAmount: {
     fontSize: 24,
-    fontWeight: 'bold',
+    fontFamily: 'Poppins_700Bold',
   },
   iconWrapper: {
     width: 48,
@@ -352,7 +343,7 @@ const styles = StyleSheet.create({
   },
   categoryTitle: {
     fontSize: 18,
-    fontWeight: '600',
+    fontFamily: 'Poppins_600SemiBold',
     color: Colors.text,
     marginBottom: 8,
   },
@@ -369,8 +360,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-  
-  // --- STYLES UNTUK MODAL ---
   modalOverlay: {
     flex: 1,
     backgroundColor: Colors.modalOverlay,
@@ -390,7 +379,7 @@ const styles = StyleSheet.create({
   },
   modalTitle: {
     fontSize: 18,
-    fontWeight: 'bold',
+    fontFamily: 'Poppins_700Bold',
     marginBottom: 20,
     textAlign: 'center',
     color: Colors.text,
@@ -412,10 +401,11 @@ const styles = StyleSheet.create({
   modalOptionText: {
     fontSize: 16,
     color: Colors.text,
+    fontFamily: 'Poppins_400Regular',
   },
   modalOptionTextActive: {
     color: Colors.primary,
-    fontWeight: '600',
+    fontFamily: 'Poppins_600SemiBold',
   },
   modalCloseButton: {
     marginTop: 16,
@@ -425,6 +415,6 @@ const styles = StyleSheet.create({
   modalCloseText: {
     fontSize: 16,
     color: Colors.textLight,
-    fontWeight: '500',
+    fontFamily: 'Poppins_500Medium',
   },
 });

@@ -6,7 +6,7 @@ import {
   FlatList, 
   Alert, 
   Text,
-  Image, // <-- Import Image
+  Image,
   Platform
 } from 'react-native';
 import { ThemedView } from '@/components/themed-view';
@@ -83,7 +83,6 @@ export default function FinanceScreen() {
   return (
     <ThemedView style={styles.container}>
       <SafeAreaView style={styles.safeArea} edges={['top']}>
-        {/* Header dengan Logo */}
         <View style={styles.header}>
           <View style={styles.headerLeft}>
             <Image 
@@ -93,7 +92,6 @@ export default function FinanceScreen() {
             <ThemedText style={styles.headerTitle}>Transaksi</ThemedText>
           </View>
           
-          {/* Tombol Tambah */}
           <TouchableOpacity onPress={() => router.push('/add-transaction')}>
             <Ionicons name="add-circle-outline" size={32} color={Colors.icon} />
           </TouchableOpacity>
@@ -143,11 +141,9 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: Colors.border,
   },
-  // Style Baru untuk Header Kiri (Logo + Judul)
   headerLeft: { 
     flexDirection: 'row', 
     alignItems: 'center',
-    // Padding khusus Android agar tidak terlalu mepet kiri jika tidak ada back button
     paddingLeft: Platform.OS === 'android' ? 0 : 0 
   },
   headerLogo: {
@@ -158,7 +154,7 @@ const styles = StyleSheet.create({
   },
   headerTitle: {
     fontSize: 20,
-    fontWeight: 'bold',
+    fontFamily: 'Poppins_700Bold', // Update Font
     color: Colors.text,
   },
   bodyContent: {
@@ -185,20 +181,21 @@ const styles = StyleSheet.create({
   },
   cardTitle: {
     fontSize: 16,
-    fontWeight: '600',
+    fontFamily: 'Poppins_600SemiBold', // Update Font
     color: Colors.text,
     marginBottom: 4,
   },
   cardDate: {
     fontSize: 12,
     color: '#888',
+    fontFamily: 'Poppins_400Regular', // Update Font
   },
   cardRight: {
     alignItems: 'flex-end',
   },
   cardAmount: {
     fontSize: 16,
-    fontWeight: 'bold',
+    fontFamily: 'Poppins_700Bold', // Update Font
     marginBottom: 4,
   },
   deleteButton: {
@@ -215,6 +212,7 @@ const styles = StyleSheet.create({
     color: '#999',
     fontSize: 16,
     marginBottom: 24,
+    fontFamily: 'Poppins_400Regular',
   },
   emptyButton: {
     backgroundColor: '#F0F0F0',
@@ -224,6 +222,6 @@ const styles = StyleSheet.create({
   },
   emptyButtonText: {
     color: '#555',
-    fontWeight: '600',
+    fontFamily: 'Poppins_600SemiBold',
   },
 });

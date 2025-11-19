@@ -8,7 +8,7 @@ import {
   StatusBar, 
   Platform, 
   StyleSheet,
-  Image // <-- Import Image
+  Image
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { ThemedText } from '@/components/themed-text';
@@ -41,13 +41,10 @@ export default function IndexScreen() {
       <SafeAreaView style={[styles.safeArea, { paddingTop: StatusBar.currentHeight || 20 }]}>
         <ThemedView style={styles.header}>
           <ThemedView style={styles.headerLeft}>
-            
-            {/* Menampilkan Logo Image */}
             <Image 
               source={require('../../assets/images/logo-uts.png')} 
               style={styles.headerLogo} 
             />
-            
             <ThemedText style={styles.headerTitle}>Spendy</ThemedText>
           </ThemedView>
           
@@ -109,16 +106,16 @@ const styles = StyleSheet.create({
     alignItems: 'center', 
     paddingLeft: Platform.OS === 'android' ? 16 : 0 
   },
-  // UPDATE: Ukuran logo diperbesar
   headerLogo: {
-    width: 54,      // Diperbesar (sebelumnya 34)
-    height: 54,     // Diperbesar (sebelumnya 34)
+    width: 54,
+    height: 54,
     marginRight: 12, 
     resizeMode: 'contain' 
   },
   headerTitle: { 
     fontSize: 26, 
-    fontWeight: '700', 
+    // Gunakan Poppins Bold
+    fontFamily: 'Poppins_700Bold', 
     color: Colors.primaryText, 
   },
   scrollView: { flex: 1 },
@@ -140,11 +137,13 @@ const styles = StyleSheet.create({
     fontSize: 16, 
     color: Colors.primaryBrandText, 
     opacity: 0.8, 
-    marginBottom: 8 
+    marginBottom: 8,
+    fontFamily: 'Poppins_400Regular' 
   },
   saldoAmount: { 
     fontSize: 34, 
-    fontWeight: '700', 
+    // Gunakan Poppins Bold
+    fontFamily: 'Poppins_700Bold', 
     color: Colors.primaryBrandText, 
     width: '100%', 
     textAlign: 'center' 
@@ -175,13 +174,14 @@ const styles = StyleSheet.create({
     marginBottom: 12 
   },
   boxLabel: { 
-    fontSize: 14, 
+    fontSize: 12, 
     color: Colors.secondaryText, 
-    marginBottom: 4 
+    marginBottom: 4,
+    fontFamily: 'Poppins_400Regular'
   },
   boxAmount: { 
-    fontSize: 20, 
-    fontWeight: '600', 
+    fontSize: 18, 
+    fontFamily: 'Poppins_600SemiBold', 
     color: Colors.primaryText 
   },
 });

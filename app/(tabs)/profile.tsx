@@ -5,7 +5,7 @@ import {
   Text,
   TouchableOpacity,
   ScrollView,
-  Image, // <-- Import Image
+  Image, 
   Platform
 } from 'react-native';
 import { ThemedView } from '@/components/themed-view';
@@ -28,7 +28,6 @@ const Colors = {
 
 export default function ProfileScreen() {
   const router = useRouter(); 
-  // Ambil nama user dari database
   const { userName } = useTransaction();
 
   const onEditProfile = () => {
@@ -42,11 +41,7 @@ export default function ProfileScreen() {
   return (
     <ThemedView style={styles.container}>
       <SafeAreaView style={styles.safeArea} edges={['top']}>
-        
-        {/* Header dengan Logo */}
         <View style={styles.header}>
-          
-           {/* Sisi Kiri: Logo + Judul */}
           <View style={styles.headerLeft}>
             <Image 
               source={require('../../assets/images/logo-uts.png')} 
@@ -54,15 +49,12 @@ export default function ProfileScreen() {
             />
             <ThemedText style={styles.headerTitle}>Profil</ThemedText>
           </View>
-
-          {/* Ikon Kanan (Kosong) */}
           <View style={{ width: 28 }} />
         </View>
       </SafeAreaView>
 
       <ScrollView style={styles.scrollView}>
         <View style={styles.mainContent}>
-          {/* Sapaan Profil Dinamis */}
           <View style={styles.profileSection}>
             <View>
               <ThemedText style={styles.greetingLabel}>Selamat Datang,</ThemedText>
@@ -78,7 +70,6 @@ export default function ProfileScreen() {
             </View>
           </View>
 
-          {/* Menu */}
           <View style={styles.menuContainer}>
             <TouchableOpacity style={styles.menuButton} onPress={onEditProfile}>
               <ThemedText style={styles.menuButtonText}>Edit Profil</ThemedText>
@@ -135,7 +126,7 @@ const styles = StyleSheet.create({
   },
   headerTitle: {
     fontSize: 20,
-    fontWeight: 'bold',
+    fontFamily: 'Poppins_700Bold',
     color: Colors.text,
   },
   scrollView: {
@@ -154,10 +145,11 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: Colors.textLight,
     marginBottom: 4,
+    fontFamily: 'Poppins_400Regular',
   },
   greetingText: {
     fontSize: 28,
-    fontWeight: 'bold',
+    fontFamily: 'Poppins_700Bold',
     color: Colors.text,
   },
   profileIconCircle: {
@@ -186,7 +178,7 @@ const styles = StyleSheet.create({
   },
   menuButtonText: {
     fontSize: 18,
-    fontWeight: '500',
+    fontFamily: 'Poppins_500Medium',
     color: Colors.buttonText,
   },
 });
