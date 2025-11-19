@@ -1,98 +1,187 @@
-import { Image } from 'expo-image';
-import { Platform, StyleSheet } from 'react-native';
-
-import { HelloWave } from '@/components/hello-wave';
-import ParallaxScrollView from '@/components/parallax-scroll-view';
+import React from 'react';
+import { 
+  View, 
+  Text, 
+  SafeAreaView, 
+  TouchableOpacity, 
+  ScrollView, 
+  StatusBar, 
+  Platform, 
+  StyleSheet,
+  Image // <-- Import Image
+} from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
-import { Link } from 'expo-router';
+import { useTransaction } from '../context/TransactionContext';
 
-export default function HomeScreen() {
+const Colors = {
+  background: '#F4F5F7',
+  cardBg: '#FFFFFF',
+  headerBg: '#FFFFFF',
+  primaryText: '#171717',
+  secondaryText: '#6B7280',
+  primaryBrand: '#4A90E2',
+  primaryBrandText: '#FFFFFF',
+  income: '#2ECC71',
+  incomeLight: '#EAF9F1',
+  expense: '#E74C3C',
+  expenseLight: '#FDEEEB',
+};
+
+export default function IndexScreen() {
+  const { currentBalance, totalIncome, totalExpense, refreshData } = useTransaction();
+
+  const formatRupiah = (number: number) => {
+    return `Rp ${number.toLocaleString('id-ID')}`;
+  };
+
   return (
-    <ParallaxScrollView
-      headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
-      headerImage={
-        <Image
-          source={require('@/assets/images/partial-react-logo.png')}
-          style={styles.reactLogo}
-        />
-      }>
-      <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">Welcome!</ThemedText>
-        <HelloWave />
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 1: Try it</ThemedText>
-        <ThemedText>
-          Edit <ThemedText type="defaultSemiBold">app/(tabs)/index.tsx</ThemedText> to see changes.
-          Press{' '}
-          <ThemedText type="defaultSemiBold">
-            {Platform.select({
-              ios: 'cmd + d',
-              android: 'cmd + m',
-              web: 'F12',
-            })}
-          </ThemedText>{' '}
-          to open developer tools.
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <Link href="/modal">
-          <Link.Trigger>
-            <ThemedText type="subtitle">Step 2: Explore</ThemedText>
-          </Link.Trigger>
-          <Link.Preview />
-          <Link.Menu>
-            <Link.MenuAction title="Action" icon="cube" onPress={() => alert('Action pressed')} />
-            <Link.MenuAction
-              title="Share"
-              icon="square.and.arrow.up"
-              onPress={() => alert('Share pressed')}
+    <ThemedView style={styles.container}>
+      <SafeAreaView style={[styles.safeArea, { paddingTop: StatusBar.currentHeight || 20 }]}>
+        <ThemedView style={styles.header}>
+          <ThemedView style={styles.headerLeft}>
+            
+            {/* Menampilkan Logo Image */}
+            <Image 
+              source={require('../../assets/images/logo-uts.png')} 
+              style={styles.headerLogo} 
             />
-            <Link.Menu title="More" icon="ellipsis">
-              <Link.MenuAction
-                title="Delete"
-                icon="trash"
-                destructive
-                onPress={() => alert('Delete pressed')}
-              />
-            </Link.Menu>
-          </Link.Menu>
-        </Link>
+            
+            <ThemedText style={styles.headerTitle}>Spendy</ThemedText>
+          </ThemedView>
+          
+          <TouchableOpacity onPress={refreshData}>
+            <Ionicons name="refresh-outline" size={24} color={Colors.primaryText} />
+          </TouchableOpacity>
+        </ThemedView>
+      </SafeAreaView>
 
-        <ThemedText>
-          {`Tap the Explore tab to learn more about what's included in this starter app.`}
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 3: Get a fresh start</ThemedText>
-        <ThemedText>
-          {`When you're ready, run `}
-          <ThemedText type="defaultSemiBold">npm run reset-project</ThemedText> to get a fresh{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> directory. This will move the current{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> to{' '}
-          <ThemedText type="defaultSemiBold">app-example</ThemedText>.
-        </ThemedText>
-      </ThemedView>
-    </ParallaxScrollView>
+      <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
+        <View style={styles.mainContent}>
+          {/* Kartu Saldo */}
+          <ThemedView style={styles.balanceCard}>
+            <ThemedText style={styles.saldoLabel}>Saldo Saat Ini</ThemedText>
+            <Text style={styles.saldoAmount} adjustsFontSizeToFit numberOfLines={1}>
+              {formatRupiah(currentBalance)}
+            </Text>
+          </ThemedView>
+
+          {/* Box Income & Expense */}
+          <View style={styles.boxesContainer}>
+            <TouchableOpacity style={styles.box}>
+              <View style={[styles.iconWrapper, { backgroundColor: Colors.incomeLight }]}>
+                <Ionicons name="arrow-up" size={24} color={Colors.income} />
+              </View>
+              <ThemedText style={styles.boxLabel}>Total Pemasukkan</ThemedText>
+              <ThemedText style={styles.boxAmount}>{formatRupiah(totalIncome)}</ThemedText>
+            </TouchableOpacity>
+
+            <TouchableOpacity style={styles.box}>
+              <View style={[styles.iconWrapper, { backgroundColor: Colors.expenseLight }]}>
+                <Ionicons name="arrow-down" size={24} color={Colors.expense} />
+              </View>
+              <ThemedText style={styles.boxLabel}>Total Pengeluaran</ThemedText>
+              <ThemedText style={styles.boxAmount}>{formatRupiah(totalExpense)}</ThemedText>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </ScrollView>
+    </ThemedView>
   );
 }
 
 const styles = StyleSheet.create({
-  titleContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
+  container: { flex: 1, backgroundColor: Colors.background },
+  safeArea: { backgroundColor: Colors.headerBg },
+  header: { 
+    flexDirection: 'row', 
+    justifyContent: 'space-between', 
+    alignItems: 'center', 
+    paddingHorizontal: 24, 
+    paddingVertical: 20, 
+    backgroundColor: Colors.headerBg, 
+    borderBottomWidth: 1, 
+    borderBottomColor: '#EEEEEE' 
   },
-  stepContainer: {
-    gap: 8,
-    marginBottom: 8,
+  headerLeft: { 
+    flexDirection: 'row', 
+    alignItems: 'center', 
+    paddingLeft: Platform.OS === 'android' ? 16 : 0 
   },
-  reactLogo: {
-    height: 178,
-    width: 290,
-    bottom: 0,
-    left: 0,
-    position: 'absolute',
+  // UPDATE: Ukuran logo diperbesar
+  headerLogo: {
+    width: 54,      // Diperbesar (sebelumnya 34)
+    height: 54,     // Diperbesar (sebelumnya 34)
+    marginRight: 12, 
+    resizeMode: 'contain' 
+  },
+  headerTitle: { 
+    fontSize: 26, 
+    fontWeight: '700', 
+    color: Colors.primaryText, 
+  },
+  scrollView: { flex: 1 },
+  mainContent: { flex: 1, padding: 24 },
+  balanceCard: { 
+    backgroundColor: Colors.primaryBrand, 
+    borderRadius: 20, 
+    padding: 24, 
+    alignItems: 'center', 
+    marginBottom: 24, 
+    width: '100%', 
+    shadowColor: '#000', 
+    shadowOffset: { width: 0, height: 4 }, 
+    shadowOpacity: 0.1, 
+    shadowRadius: 10, 
+    elevation: 8 
+  },
+  saldoLabel: { 
+    fontSize: 16, 
+    color: Colors.primaryBrandText, 
+    opacity: 0.8, 
+    marginBottom: 8 
+  },
+  saldoAmount: { 
+    fontSize: 34, 
+    fontWeight: '700', 
+    color: Colors.primaryBrandText, 
+    width: '100%', 
+    textAlign: 'center' 
+  },
+  boxesContainer: { 
+    flexDirection: 'row', 
+    justifyContent: 'space-between', 
+    gap: 16 
+  },
+  box: { 
+    flex: 1, 
+    backgroundColor: Colors.cardBg, 
+    borderRadius: 16, 
+    padding: 16, 
+    alignItems: 'flex-start', 
+    shadowColor: '#000', 
+    shadowOffset: { width: 0, height: 2 }, 
+    shadowOpacity: 0.05, 
+    shadowRadius: 5, 
+    elevation: 4 
+  },
+  iconWrapper: { 
+    width: 48, 
+    height: 48, 
+    borderRadius: 24, 
+    justifyContent: 'center', 
+    alignItems: 'center', 
+    marginBottom: 12 
+  },
+  boxLabel: { 
+    fontSize: 14, 
+    color: Colors.secondaryText, 
+    marginBottom: 4 
+  },
+  boxAmount: { 
+    fontSize: 20, 
+    fontWeight: '600', 
+    color: Colors.primaryText 
   },
 });

@@ -1,112 +1,430 @@
-import { Image } from 'expo-image';
-import { Platform, StyleSheet } from 'react-native';
-
-import { Collapsible } from '@/components/ui/collapsible';
-import { ExternalLink } from '@/components/external-link';
-import ParallaxScrollView from '@/components/parallax-scroll-view';
-import { ThemedText } from '@/components/themed-text';
+import React, { useState } from 'react';
+import { 
+  StyleSheet, 
+  View, 
+  Text, 
+  TouchableOpacity, 
+  ScrollView,
+  Image, 
+  Platform,
+  Modal,           
+  TouchableWithoutFeedback 
+} from 'react-native';
 import { ThemedView } from '@/components/themed-view';
-import { IconSymbol } from '@/components/ui/icon-symbol';
-import { Fonts } from '@/constants/theme';
+import { ThemedText } from '@/components/themed-text';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { Ionicons } from '@expo/vector-icons';
+
+// Import DateTimePicker
+import DateTimePicker from '@react-native-community/datetimepicker';
+import { FilterDuration, useTransaction } from '../context/TransactionContext';
+
+const Colors = {
+  background: '#F4F5F7',
+  cardBg: '#FFFFFF',
+  text: '#171717',
+  textLight: '#6B7280',
+  border: '#EFEFEF',
+  income: '#2ECC71',
+  expense: '#E74C3C',
+  primary: '#4A90E2',
+  modalOverlay: 'rgba(0,0,0,0.4)', 
+};
 
 export default function TabTwoScreen() {
+  const { 
+    totalIncome, 
+    totalExpense, 
+    currentBalance, 
+    filterDuration, 
+    setFilterDuration,
+    filterDate,     // <-- Ambil state tanggal
+    setFilterDate   // <-- Ambil fungsi set tanggal
+  } = useTransaction();
+
+  const [modalVisible, setModalVisible] = useState(false);
+  const [showDatePicker, setShowDatePicker] = useState(false);
+
+  const formatRupiah = (number: number) => {
+    return `Rp ${number.toLocaleString('id-ID')}`;
+  };
+
+  const formatDateIndo = (date: Date) => {
+    return date.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
+  };
+
+  // Label dinamis di Header
+  const getFilterLabel = () => {
+    switch (filterDuration) {
+      case 'date': return formatDateIndo(filterDate); // Tampilkan tanggal lengkap
+      case 'month': return filterDate.toLocaleDateString('id-ID', { month: 'long', year: 'numeric' });
+      case 'year': return filterDate.getFullYear().toString();
+      default: return 'Semua Waktu';
+    }
+  };
+
+  // Handler saat user memilih tanggal di kalender
+  const onChangeDate = (event: any, selectedDate?: Date) => {
+    // Di Android, datepicker menutup sendiri. Di iOS butuh handling manual.
+    if (Platform.OS === 'android') {
+      setShowDatePicker(false);
+    }
+
+    if (selectedDate) {
+      setFilterDate(selectedDate);
+      setFilterDuration('date'); // Otomatis set mode ke 'Per Tanggal'
+    }
+  };
+
+  // Fungsi saat opsi di Modal dipilih
+  const handleSelectFilter = (type: FilterDuration) => {
+    if (type === 'date') {
+      // Jika pilih tanggal, tutup modal menu dulu, baru buka kalender
+      setModalVisible(false);
+      setTimeout(() => setShowDatePicker(true), 300); // Delay sedikit agar smooth
+    } else {
+      // Reset tanggal ke hari ini jika pindah ke mode bulan/tahun/all
+      if (type !== 'all') {
+        setFilterDate(new Date());
+      }
+      setFilterDuration(type);
+      setModalVisible(false);
+    }
+  };
+
   return (
-    <ParallaxScrollView
-      headerBackgroundColor={{ light: '#D0D0D0', dark: '#353636' }}
-      headerImage={
-        <IconSymbol
-          size={310}
-          color="#808080"
-          name="chevron.left.forwardslash.chevron.right"
-          style={styles.headerImage}
-        />
-      }>
-      <ThemedView style={styles.titleContainer}>
-        <ThemedText
-          type="title"
-          style={{
-            fontFamily: Fonts.rounded,
-          }}>
-          Explore
-        </ThemedText>
-      </ThemedView>
-      <ThemedText>This app includes example code to help you get started.</ThemedText>
-      <Collapsible title="File-based routing">
-        <ThemedText>
-          This app has two screens:{' '}
-          <ThemedText type="defaultSemiBold">app/(tabs)/index.tsx</ThemedText> and{' '}
-          <ThemedText type="defaultSemiBold">app/(tabs)/explore.tsx</ThemedText>
-        </ThemedText>
-        <ThemedText>
-          The layout file in <ThemedText type="defaultSemiBold">app/(tabs)/_layout.tsx</ThemedText>{' '}
-          sets up the tab navigator.
-        </ThemedText>
-        <ExternalLink href="https://docs.expo.dev/router/introduction">
-          <ThemedText type="link">Learn more</ThemedText>
-        </ExternalLink>
-      </Collapsible>
-      <Collapsible title="Android, iOS, and web support">
-        <ThemedText>
-          You can open this project on Android, iOS, and the web. To open the web version, press{' '}
-          <ThemedText type="defaultSemiBold">w</ThemedText> in the terminal running this project.
-        </ThemedText>
-      </Collapsible>
-      <Collapsible title="Images">
-        <ThemedText>
-          For static images, you can use the <ThemedText type="defaultSemiBold">@2x</ThemedText> and{' '}
-          <ThemedText type="defaultSemiBold">@3x</ThemedText> suffixes to provide files for
-          different screen densities
-        </ThemedText>
-        <Image
-          source={require('@/assets/images/react-logo.png')}
-          style={{ width: 100, height: 100, alignSelf: 'center' }}
-        />
-        <ExternalLink href="https://reactnative.dev/docs/images">
-          <ThemedText type="link">Learn more</ThemedText>
-        </ExternalLink>
-      </Collapsible>
-      <Collapsible title="Light and dark mode components">
-        <ThemedText>
-          This template has light and dark mode support. The{' '}
-          <ThemedText type="defaultSemiBold">useColorScheme()</ThemedText> hook lets you inspect
-          what the user&apos;s current color scheme is, and so you can adjust UI colors accordingly.
-        </ThemedText>
-        <ExternalLink href="https://docs.expo.dev/develop/user-interface/color-themes/">
-          <ThemedText type="link">Learn more</ThemedText>
-        </ExternalLink>
-      </Collapsible>
-      <Collapsible title="Animations">
-        <ThemedText>
-          This template includes an example of an animated component. The{' '}
-          <ThemedText type="defaultSemiBold">components/HelloWave.tsx</ThemedText> component uses
-          the powerful{' '}
-          <ThemedText type="defaultSemiBold" style={{ fontFamily: Fonts.mono }}>
-            react-native-reanimated
-          </ThemedText>{' '}
-          library to create a waving hand animation.
-        </ThemedText>
-        {Platform.select({
-          ios: (
-            <ThemedText>
-              The <ThemedText type="defaultSemiBold">components/ParallaxScrollView.tsx</ThemedText>{' '}
-              component provides a parallax effect for the header image.
+    <ThemedView style={styles.container}>
+      <SafeAreaView style={styles.safeArea} edges={['top']}>
+        
+        <View style={styles.header}>
+          <View style={styles.headerLeft}>
+            <Image 
+              source={require('../../assets/images/logo-uts.png')} 
+              style={styles.headerLogo} 
+            />
+            <ThemedText style={styles.headerTitle}>Laporan</ThemedText>
+          </View>
+
+          {/* FILTER BUTTON */}
+          <TouchableOpacity 
+            style={styles.dateFilter} 
+            onPress={() => setModalVisible(true)}
+          >
+            <ThemedText style={styles.dateYear}>Filter</ThemedText>
+            <ThemedText style={styles.dateMonth}>
+              {getFilterLabel()} <Ionicons name="chevron-down" size={14} />
             </ThemedText>
-          ),
-        })}
-      </Collapsible>
-    </ParallaxScrollView>
+          </TouchableOpacity>
+        </View>
+      </SafeAreaView>
+
+      <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
+        <View style={styles.mainContent}>
+          {/* Kartu Total Pemasukan */}
+          <View style={styles.summaryCard}>
+            <View style={styles.summaryTextContainer}>
+              <ThemedText style={styles.summaryLabel}>Total Pemasukan</ThemedText>
+              <ThemedText style={[styles.summaryAmount, { color: Colors.income }]}>
+                {formatRupiah(totalIncome)}
+              </ThemedText>
+            </View>
+            <View style={[styles.iconWrapper, { backgroundColor: '#EAF9F1' }]}>
+              <Ionicons name="arrow-up" size={24} color={Colors.income} />
+            </View>
+          </View>
+
+          {/* Kartu Total Pengeluaran */}
+          <View style={styles.summaryCard}>
+            <View style={styles.summaryTextContainer}>
+              <ThemedText style={styles.summaryLabel}>Total Pengeluaran</ThemedText>
+              <ThemedText style={[styles.summaryAmount, { color: Colors.expense }]}>
+                {formatRupiah(totalExpense)}
+              </ThemedText>
+            </View>
+            <View style={[styles.iconWrapper, { backgroundColor: '#FDEEEB' }]}>
+              <Ionicons name="arrow-down" size={24} color={Colors.expense} />
+            </View>
+          </View>
+
+          {/* Kartu Saldo Bersih */}
+          <View style={styles.summaryCard}>
+            <View style={styles.summaryTextContainer}>
+              <ThemedText style={styles.summaryLabel}>Saldo Bersih</ThemedText>
+              <ThemedText style={[styles.summaryAmount, { color: Colors.text }]}>
+                {formatRupiah(currentBalance)}
+              </ThemedText>
+            </View>
+            <View style={[styles.iconWrapper, { backgroundColor: '#E3F2FD' }]}>
+              <Ionicons name="wallet-outline" size={24} color="#2196F3" />
+            </View>
+          </View>
+
+          <View style={styles.categoryCard}>
+            <ThemedText style={styles.categoryTitle}>Kategori Populer</ThemedText>
+            <ThemedText style={{color: Colors.textLight, marginBottom: 12}}>
+               (Fitur kategori akan hadir segera)
+            </ThemedText>
+            <View style={styles.categoryIconsContainer}>
+              <View style={styles.placeholderIcon}>
+                <Ionicons name="fast-food-outline" size={24} color="#fff" />
+              </View>
+              <View style={[styles.placeholderIcon, {backgroundColor: '#E67E22'}]}>
+                <Ionicons name="car-sport-outline" size={24} color="#fff" />
+              </View>
+              <View style={[styles.placeholderIcon, {backgroundColor: '#9B59B6'}]}>
+                <Ionicons name="bag-handle-outline" size={24} color="#fff" />
+              </View>
+            </View>
+          </View>
+        </View>
+      </ScrollView>
+
+      {/* --- MODAL FILTER --- */}
+      <Modal
+        animationType="fade"
+        transparent={true}
+        visible={modalVisible}
+        onRequestClose={() => setModalVisible(false)}
+      >
+        <TouchableWithoutFeedback onPress={() => setModalVisible(false)}>
+          <View style={styles.modalOverlay}>
+            <View style={styles.modalContent}>
+              <Text style={styles.modalTitle}>Pilih Periode Laporan</Text>
+              
+              <TouchableOpacity 
+                style={[styles.modalOption, filterDuration === 'all' && styles.modalOptionActive]}
+                onPress={() => handleSelectFilter('all')}
+              >
+                <Text style={[styles.modalOptionText, filterDuration === 'all' && styles.modalOptionTextActive]}>
+                  Semua Waktu
+                </Text>
+                {filterDuration === 'all' && <Ionicons name="checkmark" size={20} color={Colors.primary} />}
+              </TouchableOpacity>
+
+              <TouchableOpacity 
+                style={[styles.modalOption, filterDuration === 'date' && styles.modalOptionActive]}
+                onPress={() => handleSelectFilter('date')}
+              >
+                <Text style={[styles.modalOptionText, filterDuration === 'date' && styles.modalOptionTextActive]}>
+                  Pilih Tanggal (Kalender)
+                </Text>
+                {filterDuration === 'date' && <Ionicons name="checkmark" size={20} color={Colors.primary} />}
+              </TouchableOpacity>
+
+              <TouchableOpacity 
+                style={[styles.modalOption, filterDuration === 'month' && styles.modalOptionActive]}
+                onPress={() => handleSelectFilter('month')}
+              >
+                <Text style={[styles.modalOptionText, filterDuration === 'month' && styles.modalOptionTextActive]}>
+                  Bulan Ini
+                </Text>
+                {filterDuration === 'month' && <Ionicons name="checkmark" size={20} color={Colors.primary} />}
+              </TouchableOpacity>
+
+               <TouchableOpacity 
+                style={[styles.modalOption, filterDuration === 'year' && styles.modalOptionActive]}
+                onPress={() => handleSelectFilter('year')}
+              >
+                <Text style={[styles.modalOptionText, filterDuration === 'year' && styles.modalOptionTextActive]}>
+                  Tahun Ini
+                </Text>
+                {filterDuration === 'year' && <Ionicons name="checkmark" size={20} color={Colors.primary} />}
+              </TouchableOpacity>
+
+              <TouchableOpacity 
+                style={styles.modalCloseButton}
+                onPress={() => setModalVisible(false)}
+              >
+                <Text style={styles.modalCloseText}>Batal</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </TouchableWithoutFeedback>
+      </Modal>
+
+      {/* --- COMPONENT DATE PICKER (KALENDER) --- */}
+      {showDatePicker && (
+        <DateTimePicker
+          testID="dateTimePicker"
+          value={filterDate}
+          mode="date"
+          display="default" // Android: Kalender pop-up, iOS: Spinner/Calendar inline
+          onChange={onChangeDate}
+        />
+      )}
+
+    </ThemedView>
   );
 }
 
 const styles = StyleSheet.create({
-  headerImage: {
-    color: '#808080',
-    bottom: -90,
-    left: -35,
-    position: 'absolute',
+  container: {
+    flex: 1,
+    backgroundColor: Colors.background,
   },
-  titleContainer: {
+  safeArea: {
+    backgroundColor: Colors.cardBg,
+  },
+  header: {
     flexDirection: 'row',
-    gap: 8,
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingHorizontal: 20,
+    paddingVertical: 12,
+    backgroundColor: Colors.cardBg,
+    borderBottomWidth: 1,
+    borderBottomColor: Colors.border,
+  },
+  headerLeft: { 
+    flexDirection: 'row', 
+    alignItems: 'center', 
+  },
+  headerLogo: {
+    width: 54,
+    height: 54,
+    marginRight: 12, 
+    resizeMode: 'contain' 
+  },
+  headerTitle: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: Colors.text,
+  },
+  dateFilter: {
+    alignItems: 'flex-end',
+    padding: 8, 
+  },
+  dateYear: {
+    fontSize: 12,
+    color: Colors.textLight,
+    textAlign: 'right',
+  },
+  dateMonth: {
+    fontSize: 16,
+    fontWeight: '500',
+    color: Colors.text,
+    textAlign: 'right',
+  },
+  scrollView: { flex: 1 },
+  mainContent: { padding: 24 },
+  summaryCard: {
+    backgroundColor: Colors.cardBg,
+    borderRadius: 16,
+    padding: 20,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 16,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.05,
+    shadowRadius: 5,
+    elevation: 3,
+  },
+  summaryTextContainer: { flex: 1 },
+  summaryLabel: {
+    fontSize: 14,
+    color: Colors.textLight,
+    marginBottom: 4,
+  },
+  summaryAmount: {
+    fontSize: 24,
+    fontWeight: 'bold',
+  },
+  iconWrapper: {
+    width: 48,
+    height: 48,
+    borderRadius: 24,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginLeft: 16,
+  },
+  categoryCard: {
+    backgroundColor: Colors.cardBg,
+    borderRadius: 16,
+    padding: 20,
+    marginTop: 8,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.05,
+    shadowRadius: 5,
+    elevation: 3,
+  },
+  categoryTitle: {
+    fontSize: 18,
+    fontWeight: '600',
+    color: Colors.text,
+    marginBottom: 8,
+  },
+  categoryIconsContainer: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 12,
+  },
+  placeholderIcon: {
+    width: 50,
+    height: 50,
+    borderRadius: 25,
+    backgroundColor: '#3498DB',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  
+  // --- STYLES UNTUK MODAL ---
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: Colors.modalOverlay,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  modalContent: {
+    width: '85%',
+    backgroundColor: 'white',
+    borderRadius: 20,
+    padding: 24,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+  },
+  modalTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginBottom: 20,
+    textAlign: 'center',
+    color: Colors.text,
+  },
+  modalOption: {
+    paddingVertical: 16,
+    borderBottomWidth: 1,
+    borderBottomColor: '#F0F0F0',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  modalOptionActive: {
+    backgroundColor: '#F5F9FF',
+    borderRadius: 8,
+    paddingHorizontal: 12,
+    borderBottomWidth: 0,
+  },
+  modalOptionText: {
+    fontSize: 16,
+    color: Colors.text,
+  },
+  modalOptionTextActive: {
+    color: Colors.primary,
+    fontWeight: '600',
+  },
+  modalCloseButton: {
+    marginTop: 16,
+    paddingVertical: 12,
+    alignItems: 'center',
+  },
+  modalCloseText: {
+    fontSize: 16,
+    color: Colors.textLight,
+    fontWeight: '500',
   },
 });

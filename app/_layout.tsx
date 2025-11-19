@@ -1,24 +1,48 @@
-import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
-import { Stack } from 'expo-router';
-import { StatusBar } from 'expo-status-bar';
-import 'react-native-reanimated';
+import { Stack, Redirect, useSegments } from 'expo-router';
+import React, { useState, useEffect } from 'react';
+import { TransactionProvider } from './context/TransactionContext';
 
-import { useColorScheme } from '@/hooks/use-color-scheme';
-
-export const unstable_settings = {
-  anchor: '(tabs)',
+export const MOCK_AUTH_STATE = {
+  isLoggedIn: false,
+  setIsLoggedIn: (_value: boolean) => {}
 };
 
+function useAuth() {
+  const [isLogged, setIsLogged] = useState(MOCK_AUTH_STATE.isLoggedIn);
+
+  useEffect(() => {
+    MOCK_AUTH_STATE.setIsLoggedIn = (value: boolean) => {
+      MOCK_AUTH_STATE.isLoggedIn = value;
+      setIsLogged(value);
+    };
+    return () => {
+      MOCK_AUTH_STATE.setIsLoggedIn = (_value: boolean) => {};
+    }
+  }, []);
+
+  return { isLogged };
+}
+
 export default function RootLayout() {
-  const colorScheme = useColorScheme();
+  const { isLogged } = useAuth();
+  const segments = useSegments();
+  const inAuthGroup = segments[0] === 'auth';
+
+  // Logic Redirect Auth (Sama seperti kodemu)
+  if (!isLogged && !inAuthGroup) {
+    return <Redirect href="/auth" />;
+  }
+  if (isLogged && inAuthGroup) {
+    return <Redirect href="/(tabs)" />;
+  }
 
   return (
-    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
+    // BUNGKUS STACK DENGAN PROVIDER
+    <TransactionProvider>
       <Stack>
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="modal" options={{ presentation: 'modal', title: 'Modal' }} />
+        <Stack.Screen name="auth" options={{ headerShown: false }} />
       </Stack>
-      <StatusBar style="auto" />
-    </ThemeProvider>
+    </TransactionProvider>
   );
 }
