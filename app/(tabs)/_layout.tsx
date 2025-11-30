@@ -1,20 +1,16 @@
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
 import { Tabs } from 'expo-router';
-import { Ionicons } from '@expo/vector-icons'; // Pastikan @expo/vector-icons terinstal
+import { Ionicons } from '@expo/vector-icons'; 
 
-// Daftar warna (sesuaikan dengan tema Anda jika perlu)
 const Colors = {
-  icon: '#000000', // Ikon hitam
-  iconInactive: '#8e8e93', // Ikon abu-abu saat tidak aktif
-  activeBackground: '#e0f2ff', // Background biru muda saat aktif (sesuai gambar)
-  tabBar: '#ffffff', // Background tab bar putih
-  tabBarBorder: '#e0e0e0', // Garis batas di atas tab bar
+  icon: '#000000',
+  iconInactive: '#8e8e93', 
+  activeBackground: '#e0f2ff',
+  tabBar: '#ffffff', 
+  tabBarBorder: '#e0e0e0', 
 };
 
-/**
- * Komponen kustom untuk render ikon di tab bar.
- */
 function TabBarIcon({
   name,
   focused,
@@ -25,7 +21,6 @@ function TabBarIcon({
   const iconColor = focused ? Colors.icon : Colors.iconInactive;
 
   return (
-    // View ini akan menjadi lingkaran jika 'focused'
     <View
       style={[
         styles.tabIconContainer,
@@ -36,26 +31,25 @@ function TabBarIcon({
   );
 }
 
-// Ini adalah komponen default yang diekspor dari _layout.tsx
 export default function TabLayout() {
   return (
     <Tabs
       screenOptions={{
-        tabBarShowLabel: false, // Menyembunyikan label teks (Home, Explore, dll.)
+        tabBarShowLabel: false, 
         tabBarActiveTintColor: Colors.icon,
         tabBarInactiveTintColor: Colors.iconInactive,
         tabBarStyle: {
           backgroundColor: Colors.tabBar,
           borderTopWidth: 1,
           borderTopColor: Colors.tabBarBorder,
-          height: 80, // Sesuaikan tinggi tab bar
-          paddingBottom: 20, // Padding untuk area aman (iPhone)
+          height: 80,
+          paddingBottom: 20, 
           paddingTop: 10,
         },
       }}>
-      {/* TAB 1: HOME */}
+
       <Tabs.Screen
-        name="index" // HARUS COCOK dengan file `app/(tabs)/index.tsx`
+        name="index" 
         options={{
           title: 'Home',
           headerShown: false,
@@ -67,9 +61,9 @@ export default function TabLayout() {
           ),
         }}
       />
-      {/* TAB 2: FINANCE */}
+
       <Tabs.Screen
-        name="finance" // HARUS COCOK dengan file `app/(tabs)/finance.tsx`
+        name="finance" 
         options={{
           title: 'Finance',
           headerShown: false,
@@ -81,9 +75,9 @@ export default function TabLayout() {
           ),
         }}
       />
-      {/* TAB 3: EXPLORE */}
+
       <Tabs.Screen
-        name="explore" // HARUS COCOK dengan file `app/(tabs)/explore.tsx`
+        name="explore" 
         options={{
           title: 'Explore',
           headerShown: false,
@@ -95,9 +89,9 @@ export default function TabLayout() {
           ),
         }}
       />
-      {/* TAB 4: PROFILE */}
+
       <Tabs.Screen
-        name="profile" // HARUS COCOK dengan file `app/(tabs)/profile.tsx`
+        name="profile" 
         options={{
           title: 'Profile',
           headerShown: false,
@@ -115,11 +109,11 @@ export default function TabLayout() {
 
 const styles = StyleSheet.create({
   tabIconContainer: {
-    width: 44, // Lebar lingkaran background
-    height: 44, // Tinggi lingkaran background
-    borderRadius: 22, // Setengah dari width/height untuk membuatnya bulat
+    width: 44, 
+    height: 44, 
+    borderRadius: 22, 
     justifyContent: 'center',
     alignItems: 'center',
-    marginTop: 4, // Sedikit margin ke atas
+    marginTop: 4, 
   },
 });

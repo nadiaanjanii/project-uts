@@ -15,46 +15,39 @@ import { Ionicons } from '@expo/vector-icons';
 import { useRouter, Stack } from 'expo-router';
 import { useTransaction } from './context/TransactionContext';
 
-// Definisikan warna agar mudah diubah
 const Colors = {
   background: '#FFFFFF',
   text: '#171717',
   textLight: '#6B7280',
   border: '#EFEFEF',
   icon: '#333333',
-  inputBg: '#F5F7FA', // Warna background input lebih soft
+  inputBg: '#F5F7FA', 
   inputBorder: '#E2E8F0',
-  primary: '#4A90E2', // Warna utama tombol
+  primary: '#4A90E2', 
   white: '#FFFFFF',
 };
 
 export default function EditProfileScreen() {
   const router = useRouter();
   
-  // 1. Ambil data user dan fungsi update dari Context
   const { userName, updateUserName } = useTransaction();
-  
-  // 2. State untuk input nama
+
   const [nameInput, setNameInput] = useState('');
 
-  // 3. Isi input dengan nama saat ini ketika halaman dimuat
   useEffect(() => {
     if (userName) {
       setNameInput(userName);
     }
   }, [userName]);
 
-  // 4. Fungsi Simpan
   const handleSave = () => {
     if (nameInput.trim() === '') {
       Alert.alert('Peringatan', 'Nama tidak boleh kosong!');
       return;
     }
 
-    // Update ke database via context
     updateUserName(nameInput);
-    
-    // Kembali ke halaman profile
+
     router.back();
   };
 

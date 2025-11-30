@@ -27,8 +27,6 @@ export default function RootLayout() {
   const { isLogged } = useAuth();
   const segments = useSegments();
   const inAuthGroup = segments[0] === 'auth';
-
-  // Logic Redirect Auth (Sama seperti kodemu)
   if (!isLogged && !inAuthGroup) {
     return <Redirect href="/auth" />;
   }
@@ -37,7 +35,6 @@ export default function RootLayout() {
   }
 
   return (
-    // BUNGKUS STACK DENGAN PROVIDER
     <TransactionProvider>
       <Stack>
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />

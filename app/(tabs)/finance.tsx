@@ -154,7 +154,7 @@ const styles = StyleSheet.create({
   },
   headerTitle: {
     fontSize: 20,
-    fontFamily: 'Poppins_700Bold', // Update Font
+    fontFamily: 'Poppins_700Bold', 
     color: Colors.text,
   },
   bodyContent: {
@@ -181,21 +181,21 @@ const styles = StyleSheet.create({
   },
   cardTitle: {
     fontSize: 16,
-    fontFamily: 'Poppins_600SemiBold', // Update Font
+    fontFamily: 'Poppins_600SemiBold', 
     color: Colors.text,
     marginBottom: 4,
   },
   cardDate: {
     fontSize: 12,
     color: '#888',
-    fontFamily: 'Poppins_400Regular', // Update Font
+    fontFamily: 'Poppins_400Regular', 
   },
   cardRight: {
     alignItems: 'flex-end',
   },
   cardAmount: {
     fontSize: 16,
-    fontFamily: 'Poppins_700Bold', // Update Font
+    fontFamily: 'Poppins_700Bold',
     marginBottom: 4,
   },
   deleteButton: {

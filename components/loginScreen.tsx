@@ -1,9 +1,6 @@
 import React, { useState } from 'react';
 import { StyleSheet, Text, View, TextInput, TouchableOpacity, Alert, SafeAreaView } from 'react-native';
 import { useRouter } from 'expo-router'; 
-
-// Impor MOCK_AUTH_STATE dari root layout
-// Pastikan path '../app/_layout' ini benar sesuai struktur folder Anda
 import { MOCK_AUTH_STATE } from '../app/_layout'; 
 
 const LoginScreen: React.FC = () => {
@@ -13,24 +10,16 @@ const LoginScreen: React.FC = () => {
   const [password, setPassword] = useState<string>('');
 
   const handleLogin = () => {
-    // --- PERUBAHAN ---
-    // Logika diubah agar dinamis:
-    // Sekarang, login akan berhasil jika username DAN password TIDAK kosong.
-    // Cek 'trim()' adalah untuk memastikan spasi saja tidak dihitung sebagai input valid.
     if (username.trim() !== '' && password.trim() !== '') { 
       Alert.alert('Login Sukses', `Selamat datang, ${username}!`);
       
-      // Update status login ke TRUE
       MOCK_AUTH_STATE.setIsLoggedIn(true);
       
-      // Navigasi ke Tabs
       router.replace('/(tabs)'); 
       
     } else {
-      // Pesan error diubah agar sesuai dengan logika baru
       Alert.alert('Login Gagal', 'Username dan Password tidak boleh kosong.');
     }
-    // --- AKHIR PERUBAHAN ---
   };
 
   return (
@@ -69,7 +58,6 @@ const LoginScreen: React.FC = () => {
   );
 };
 
-// Styles (tetap sama)
 const styles = StyleSheet.create({
   container: {
     flex: 1,

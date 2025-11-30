@@ -1,7 +1,6 @@
 import React, { createContext, useContext, useEffect, useState, useCallback } from 'react';
 import { getDbConnection, initDatabase } from '../database/db';
 
-// Tipe data Transaksi
 export interface Transaction {
   id: number;
   title: string;
@@ -11,10 +10,8 @@ export interface Transaction {
   date: string;
 }
 
-// Tambahkan tipe 'date' untuk filter spesifik per hari
 export type FilterDuration = 'all' | 'date' | 'month' | 'year';
 
-// Tipe data Context
 interface TransactionContextType {
   transactions: Transaction[];
   totalIncome: number;
@@ -24,8 +21,8 @@ interface TransactionContextType {
   loading: boolean;
   filterDuration: FilterDuration; 
   setFilterDuration: (duration: FilterDuration) => void;
-  filterDate: Date; // <-- State baru: Tanggal yang dipilih
-  setFilterDate: (date: Date) => void; // <-- Fungsi baru: Set tanggal
+  filterDate: Date; 
+  setFilterDate: (date: Date) => void; 
   addTransaction: (title: string, amount: number, type: 'income' | 'expense', description: string) => void;
   deleteTransaction: (id: number) => void;
   updateUserName: (name: string) => void;
@@ -43,36 +40,27 @@ export const TransactionProvider = ({ children }: { children: React.ReactNode })
   const [loading, setLoading] = useState(true);
   
   const [filterDuration, setFilterDuration] = useState<FilterDuration>('all');
-  const [filterDate, setFilterDate] = useState<Date>(new Date()); // Default hari ini
+  const [filterDate, setFilterDate] = useState<Date>(new Date()); 
 
   const db = getDbConnection();
-
-  // Load data dengan filter
   const loadData = useCallback(() => {
     setLoading(true);
     try {
       let query = 'SELECT * FROM transactions';
       let params: any[] = [];
       
-      // Gunakan tanggal yang dipilih (filterDate), bukan new Date()
       const selectedIso = filterDate.toISOString(); 
-
-      // LOGIKA FILTER SQL
       if (filterDuration === 'date') {
-        // Filter Harian: YYYY-MM-DD
-        // Kita ambil 10 karakter pertama dari ISO string (2023-11-20)
         const dateStr = selectedIso.slice(0, 10);
         query += " WHERE strftime('%Y-%m-%d', date) = ?";
         params.push(dateStr);
 
       } else if (filterDuration === 'month') {
-        // Filter Bulanan: YYYY-MM
         const monthStr = selectedIso.slice(0, 7); 
         query += " WHERE strftime('%Y-%m', date) = ?";
         params.push(monthStr);
 
       } else if (filterDuration === 'year') {
-        // Filter Tahunan: YYYY
         const yearStr = filterDate.getFullYear().toString();
         query += " WHERE strftime('%Y', date) = ?";
         params.push(yearStr);
@@ -80,7 +68,6 @@ export const TransactionProvider = ({ children }: { children: React.ReactNode })
 
       query += ' ORDER BY id DESC;';
 
-      // Eksekusi Query
       const result = db.getAllSync<Transaction>(query, params);
       setTransactions(result);
 
@@ -89,9 +76,8 @@ export const TransactionProvider = ({ children }: { children: React.ReactNode })
     } finally {
       setLoading(false);
     }
-  }, [db, filterDuration, filterDate]); // <-- Re-run jika tanggal berubah
+  }, [db, filterDuration, filterDate]); 
 
-  // Load profil user
   const loadUserProfile = useCallback(() => {
     try {
       const user = db.getFirstSync<{ id: number, name: string }>('SELECT * FROM user_profile WHERE id = 1;');
@@ -173,8 +159,8 @@ export const TransactionProvider = ({ children }: { children: React.ReactNode })
         loading,
         filterDuration,    
         setFilterDuration,
-        filterDate,       // <-- Export state tanggal
-        setFilterDate,    // <-- Export fungsi set tanggal
+        filterDate,      
+        setFilterDate,    
         addTransaction,
         deleteTransaction,
         updateUserName,

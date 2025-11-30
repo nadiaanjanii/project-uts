@@ -114,7 +114,6 @@ const styles = StyleSheet.create({
   },
   headerTitle: { 
     fontSize: 26, 
-    // Gunakan Poppins Bold
     fontFamily: 'Poppins_700Bold', 
     color: Colors.primaryText, 
   },
@@ -142,7 +141,6 @@ const styles = StyleSheet.create({
   },
   saldoAmount: { 
     fontSize: 34, 
-    // Gunakan Poppins Bold
     fontFamily: 'Poppins_700Bold', 
     color: Colors.primaryBrandText, 
     width: '100%', 

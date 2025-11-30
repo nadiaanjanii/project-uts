@@ -4,9 +4,8 @@ import { ThemedView } from '@/components/themed-view';
 import { ThemedText } from '@/components/themed-text';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
-import { useRouter, Stack } from 'expo-router'; // Import Stack
+import { useRouter, Stack } from 'expo-router';
 
-// Definisikan warna agar mudah diubah
 const Colors = {
   background: '#FFFFFF',
   text: '#171717',
@@ -59,7 +58,7 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.background,
   },
   safeArea: {
-    backgroundColor: Colors.background, // Header putih
+    backgroundColor: Colors.background, 
   },
   header: {
     flexDirection: 'row',
@@ -76,9 +75,9 @@ const styles = StyleSheet.create({
     color: Colors.text,
   },
   bodyContent: {
-    flex: 1, // Mengisi sisa ruang
-    justifyContent: 'center', // Menengahkan secara vertikal
-    alignItems: 'center', // Menengahkan secara horizontal
+    flex: 1, 
+    justifyContent: 'center', 
+    alignItems: 'center', 
   },
   appName: {
     fontSize: 32,

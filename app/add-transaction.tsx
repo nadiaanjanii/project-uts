@@ -26,7 +26,7 @@ const Colors = {
 
 export default function AddTransactionScreen() {
   const router = useRouter();
-  const { addTransaction } = useTransaction(); // <-- AMBIL FUNGSI
+  const { addTransaction } = useTransaction(); 
 
   const [amount, setAmount] = useState('');
   const [title, setTitle] = useState('');
@@ -34,7 +34,6 @@ export default function AddTransactionScreen() {
   const [type, setType] = useState<'income' | 'expense'>('expense');
 
   const onSave = () => {
-    // Validasi sederhana
     if (!amount || !title) {
       Alert.alert('Gagal', 'Mohon isi jumlah dan judul transaksi');
       return;
@@ -46,10 +45,8 @@ export default function AddTransactionScreen() {
       return;
     }
 
-    // Simpan ke Database via Context
     addTransaction(title, numAmount, type, description);
     
-    // Kembali ke halaman sebelumnya
     router.back();
   };
 
@@ -121,7 +118,6 @@ export default function AddTransactionScreen() {
 }
 
 const styles = StyleSheet.create({
-    // Gunakan styles yang sama dengan kodemu sebelumnya, ini hanya penyesuaian layout
     container: { flex: 1, backgroundColor: Colors.background },
     safeArea: { backgroundColor: Colors.background },
     header: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingHorizontal: 20, paddingVertical: 12 },
